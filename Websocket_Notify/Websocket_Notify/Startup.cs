@@ -19,6 +19,9 @@ namespace Websocket_Notify
                 .AddJsonFile("mongodbsettings.json", optional: true, reloadOnChange: false)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            // 初始化参数
+            initParam();
         }
 
         public IConfiguration Configuration { get; }
@@ -44,9 +47,6 @@ namespace Websocket_Notify
 
         private void initWsProcessor(IApplicationBuilder app)
         {
-            // 初始化参数
-            initParam();
-
             // 初始化连接
             var options = new WebSocketOptions()
             {
