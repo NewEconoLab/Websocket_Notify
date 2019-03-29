@@ -45,9 +45,8 @@ namespace Websocket_Notify.Notify
                 res.Add("blockHeight", blockHeight);
                 res.Add("blockTime", blockTime);
                 res.Add("blockHash", blockHash);
-                res.Add("blockSelffTime:", TimeHelper.toBlockindexTimeFmt(blockTime));
-                res.Add("blockInserTime:", TimeHelper.toMongodbTimeFmt(newdata["_id"]["$oid"].ToString()));
-                res.Add("svrSystemTime:", TimeHelper.GetNowTimeFmt());
+                res.Add("blockInsertTime:", TimeHelper.toTimeStamp(new ObjectId(newdata["_id"]["$oid"].ToString()).CreationTime));
+                res.Add("svrSystemTime:", TimeHelper.toTimeStamp(System.DateTime.UtcNow));
                 res.Add("tx", newdata["tx"]);
                 a.blockHeight = blockHeight;
                 a.blockTime = blockTime;
