@@ -10,8 +10,9 @@
 
         public static string[] networks = new string[] { "testnet", "mainnet" };
 
-        public static int ping_interval_minutes = 2;   // 单位: 分钟
-        public static int loop_interval_seconds = 2;   // 单位: 秒
+        public static int ping_loop_seconds = 1000;       // 单位: 秒
+        public static int ping_interval_seconds = 1000;   // 单位: 秒
+        public static int send_loop_seconds = 1000;       // 单位: 秒
 
     }
 }

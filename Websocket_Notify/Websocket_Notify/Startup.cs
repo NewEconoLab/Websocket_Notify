@@ -82,8 +82,9 @@ namespace Websocket_Notify
             WsConst.block_mongodbDatabase_testnet = Configuration.GetSection("mongodbDatabase_testnet").Value;
             WsConst.block_mongodbConnStr_mainnet = Configuration.GetSection("mongodbConnStr_mainnet").Value;
             WsConst.block_mongodbDatabase_mainnet = Configuration.GetSection("mongodbDatabase_mainnet").Value;
-            WsConst.ping_interval_minutes = int.Parse(Configuration.GetSection("ping_interval_minutes").Value);
-            WsConst.loop_interval_seconds = int.Parse(Configuration.GetSection("loop_interval_seconds").Value);
+            WsConst.ping_loop_seconds = int.Parse(Configuration.GetSection("ping_loop_seconds").Value);
+            WsConst.ping_interval_seconds = int.Parse(Configuration.GetSection("ping_interval_seconds").Value);
+            WsConst.send_loop_seconds = int.Parse(Configuration.GetSection("send_loop_seconds").Value);
         }
     }
 }

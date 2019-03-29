@@ -34,10 +34,10 @@ namespace Websocket_Notify.Notify
         /// </summary>
         public static void loop()
         {
-            while(true)
+            while (true)
             {
                 var now = DateTime.Now;
-                Thread.Sleep(1000 * WsConst.loop_interval_seconds);
+                Thread.Sleep(1000 * WsConst.send_loop_seconds);
                 
                 foreach (var network in WsConst.networks)
                 {
@@ -66,7 +66,7 @@ namespace Websocket_Notify.Notify
         {
             while(true)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(1000 * WsConst.ping_loop_seconds);
                 var sessions = WebSocketHandler.socketDict.Values.ToList();
                 if (sessions.Count > 0)
                 {

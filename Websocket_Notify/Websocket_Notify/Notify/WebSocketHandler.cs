@@ -36,7 +36,6 @@ namespace Websocket_Notify.Notify
         
         public string LogInfo => new JObject() { { "id", id } }.ToString();
         public string PingInfo => new JObject() { { "time", DateTime.Now.ToString("u") } }.ToString();
-        private long getNowTimeMunite => DateTime.Now.Minute;
 
         /// <summary>
         /// 
@@ -83,7 +82,7 @@ namespace Websocket_Notify.Notify
         /// <returns></returns>
         public async Task ping()
         {
-            if (lastSendMunite + WsConst.ping_interval_minutes > getNowTimeMunite) return;
+            if (lastSendMunite + WsConst.ping_interval_seconds > TimeHelper.GetTimeStamp()) return;
             try
             {
                 await sendMessageAsync(Message.MakeMessage(Message.Type.Ping, PingInfo));
@@ -131,7 +130,7 @@ namespace Websocket_Notify.Notify
         /// <returns></returns>
         private async Task sendMessageAsync(string message)
         {
-            lastSendMunite = getNowTimeMunite;
+            lastSendMunite = TimeHelper.GetTimeStamp();
             await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)), WebSocketMessageType.Text, true, CancellationToken.None);
 
         }

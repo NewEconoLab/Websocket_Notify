@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -36,32 +37,44 @@ namespace Websocket_Notify.Notify
             bool flag = false;
             var res = new JObject() { { "network", network } };
             var newdata = getBlockAndNotifyCount(network);
-            if(a.blockHeight < newdata.blockHeight || first)
+            var blockHeight = long.Parse(newdata["index"].ToString());
+            var blockTime = long.Parse(newdata["time"].ToString());
+            var blockHash = newdata["hash"].ToString();
+            if(a.blockHeight < blockHeight || first)
             {
-                res.Add("blockHeight", newdata.blockHeight);
-                res.Add("blockTime", newdata.blockTime);
-                res.Add("blockHash", newdata.blockHash);
+                res.Add("blockHeight", blockHeight);
+                res.Add("blockTime", blockTime);
+                res.Add("blockHash", blockHash);
+                res.Add("blockSelffTime:", TimeHelper.toBlockindexTimeFmt(blockTime));
+                res.Add("blockInserTime:", TimeHelper.toMongodbTimeFmt(newdata["_id"]["$oid"].ToString()));
+                res.Add("svrSystemTime:", TimeHelper.GetNowTimeFmt());
+                res.Add("tx", newdata["tx"]);
+                a.blockHeight = blockHeight;
+                a.blockTime = blockTime;
+                a.blockHash = blockHash;
                 flag = true;
             } else
             {
                 flag = false;
             }
             dictInfo.Remove(network);
-            dictInfo.Add(newdata.network, newdata);
+            dictInfo.Add(network, a);
 
             //message = res.ToString();
             message = Newtonsoft.Json.JsonConvert.SerializeObject(res);
             return flag;
         }
+        
         private class A
         {
             public string network { get; set; }
             public long blockHeight { get; set; }
             public long blockTime { get; set; }
             public string blockHash { get; set; }
+            public string[] txids;
         }
         private Dictionary<string, A> dictInfo = new Dictionary<string, A>();
-        private A getBlockAndNotifyCount(string network)
+        private JObject getBlockAndNotifyCount(string network)
         {
             bool flag = network == "mainnet";
             string mongodbConnStr =  flag ? WsConst.block_mongodbConnStr_mainnet : WsConst.block_mongodbConnStr_testnet;
@@ -73,31 +86,18 @@ namespace Websocket_Notify.Notify
             var collection = database.GetCollection<BsonDocument>("system_counter");
             string findStr = new JObject() { { "counter", "block" } }.ToString();
             var res = collection.Find(findStr).ToList();
-
-            var a = new A
-            {
-                network = network,
-                blockHeight = 0,
-                blockTime = 0,
-                blockHash = ""
-            };
-            if (res == null || res.Count == 0)
-            {
-                return a;
-            }
+            //
             var index = (int)res[0]["lastBlockindex"];
             findStr = new JObject() { {"index", index } }.ToString();
-            string fieldStr = new JObject() { {"index",1 }, { "time", 1 }, { "hash", 1 } }.ToString();
+            string fieldStr = new JObject() { {"index",1 }, { "time", 1 }, { "hash", 1 },{ "tx.txid",1}}.ToString();
             collection = database.GetCollection<BsonDocument>("block");
             res = collection.Find(findStr).Project(fieldStr).ToList();
-            if(res != null && res.Count > 0)
-            {
-                a.blockHeight = index;
-                a.blockTime = long.Parse(res[0]["time"].ToString());
-                a.blockHash = res[0]["hash"].ToString();
-            }
-            return a;
+            //
+            var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+            JArray JA = JArray.Parse(res.ToJson(jsonWriterSettings));
+            return (JObject)JA[0];
         }
+        
     }
     
 }
