@@ -76,8 +76,8 @@ namespace Websocket_Notify.Notify
         private JObject getBlockAndNotifyCount(string network)
         {
             bool flag = network == "mainnet";
-            string mongodbConnStr =  flag ? WsConst.block_mongodbConnStr_mainnet : WsConst.block_mongodbConnStr_testnet;
-            string mongodbDatabase = flag ? WsConst.block_mongodbDatabase_mainnet : WsConst.block_mongodbDatabase_testnet;
+            var mongodbConnStr =  flag ? WsConst.block_mongodbConnStr_mainnet : WsConst.block_mongodbConnStr_testnet;
+            var mongodbDatabase = flag ? WsConst.block_mongodbDatabase_mainnet : WsConst.block_mongodbDatabase_testnet;
 
             //
             var client = new MongoClient(mongodbConnStr);
@@ -86,9 +86,9 @@ namespace Websocket_Notify.Notify
             string findStr = new JObject() { { "counter", "block" } }.ToString();
             var res = collection.Find(findStr).ToList();
             //
-            var index = (int)res[0]["lastBlockindex"];
+            var index = (long)res[0]["lastBlockindex"];
             findStr = new JObject() { {"index", index } }.ToString();
-            string fieldStr = new JObject() { {"index",1 }, { "time", 1 }, { "hash", 1 },{ "tx.txid",1}}.ToString();
+            var fieldStr = new JObject() { {"index",1 }, { "time", 1 }, { "hash", 1 },{ "tx.hash",1}}.ToString();
             collection = database.GetCollection<BsonDocument>("block");
             res = collection.Find(findStr).Project(fieldStr).ToList();
             //

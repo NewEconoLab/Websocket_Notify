@@ -1,9 +1,10 @@
 ﻿{
-  "appPort":82, 
+  "appPort": 82,
   "mongodbConnStr_testnet": "",
   "mongodbDatabase_testnet": "",
   "mongodbConnStr_mainnet": "",
   "mongodbDatabase_mainnet": "",
   "ping_interval_minutes": 1,
-  "loop_interval_seconds": 3
+  "loop_interval_seconds": 3,
+  "ping_loop_seconds": 9
 }
