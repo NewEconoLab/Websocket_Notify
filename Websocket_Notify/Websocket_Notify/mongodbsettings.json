@@ -6,5 +6,6 @@
   "mongodbDatabase_mainnet": "",
   "ping_interval_minutes": 1,
   "loop_interval_seconds": 3,
-  "ping_loop_seconds": 9
+  "ping_loop_seconds": 9,
+  "ping_interval_seconds": 99
 }
