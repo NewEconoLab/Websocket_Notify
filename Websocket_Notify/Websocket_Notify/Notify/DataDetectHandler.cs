@@ -79,6 +79,7 @@ namespace Websocket_Notify.Notify
             var mongodbConnStr =  flag ? WsConst.block_mongodbConnStr_mainnet : WsConst.block_mongodbConnStr_testnet;
             var mongodbDatabase = flag ? WsConst.block_mongodbDatabase_mainnet : WsConst.block_mongodbDatabase_testnet;
 
+
             //
             var client = new MongoClient(mongodbConnStr);
             var database = client.GetDatabase(mongodbDatabase);
